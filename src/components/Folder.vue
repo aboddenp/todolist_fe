@@ -1,42 +1,45 @@
 <template>
   <v-container>
-    <v-row justify="center"><h3 class="display2">Folders</h3> </v-row>
     <v-row justify="center">
-      <v-list>
-        <v-list-item v-for="folder in folders" :key="folder.id">
+      <v-list elevation="2">
+        <v-subheader class="pl-4">Folders</v-subheader>
+        <template v-for="(folder, index) in folders">
+          <v-list-item :key="folder.id">
+            <v-list-item-content class="pr-16">
+              {{ folder.name }}
+            </v-list-item-content>
 
-          <v-list-item-content>
-            {{ folder.name }}
-          </v-list-item-content>
+            <v-spacer> </v-spacer>
 
-          <v-list-item-action>
             <v-btn icon @click="goTo(folder)">
-              <v-icon left color="grey lighten-1">mdi-folder</v-icon>
+              <v-icon left color="blue lighten-1">mdi-folder</v-icon>
             </v-btn>
-            <v-btn icon @click="remove(folder)">
-              <v-icon color="grey lighten-1">mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
+            <v-list-item-action>
+              <v-btn icon @click="remove(folder)">
+                <v-icon color="blue lighten-1">mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider class="mx-4" v-if="index < folders.length - 1" :key="index"></v-divider>
+        </template>
+        <v-form
+          class="d-flex pa-6 align-baseline"
+          ref="form"
+          v-on:submit.prevent="onSubmit"
+        >
+          <v-text-field
+            v-model="newFolderName"
+            label="New Folder"
+            hint="hint:'create a Folder to start a list'"
+            :rules="folderRules"
+            required
+          >
+          </v-text-field>
+          <v-btn class="ml-4" type="submit"> add </v-btn>
+        </v-form>
       </v-list>
     </v-row>
-    <v-row justify="center">
-      <v-form
-        class="d-flex align-baseline"
-        ref="form"
-        v-on:submit.prevent="onSubmit"
-      >
-        <v-text-field
-          v-model="newFolderName"
-          label="New Folder"
-          hint="hint:'create a Folder to start a list'"
-          :rules="folderRules"
-          required
-        >
-        </v-text-field>
-        <v-btn class="ml-4" type="submit"> add </v-btn>
-      </v-form>
-    </v-row>
+
   </v-container>
 </template>
 
@@ -58,7 +61,10 @@ export default {
       this.folders = this.folders.filter((task) => task !== folder);
     },
     goTo(folder) {
-      router.push({name:"todos", params:{name: folder.name, id:folder.id}})
+      router.push({
+        name: "todos",
+        params: { name: folder.name, id: folder.id },
+      });
     },
     onSubmit() {
       if (this.$refs.form.validate()) {

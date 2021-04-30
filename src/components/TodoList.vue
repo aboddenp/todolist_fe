@@ -1,15 +1,13 @@
 <template>
   <v-container>
-    <v-row justify="center"
-      ><h3 class="display2">
-        Folders > {{ this.folder ? this.folder.name : "loading" }}
-      </h3>
-    </v-row>
     <v-row justify="center">
-      <v-list>
-        <v-list-item v-for="todo in todos" :key="todo.id">
+      <v-list elevation="2">
+        <v-subheader class="pl-6">Folders > {{ this.folder ? this.folder.name : "loading" }} </v-subheader>
+        <template v-for="(todo, index) in todos" > 
+        <v-list-item :key="todo.id">
           <v-list-item-action>
             <v-checkbox
+              color="orange lighten-1"
               :input-value="todo.done"
               @click="toggleDone(todo)"
             ></v-checkbox>
@@ -21,18 +19,17 @@
 
           <v-list-item-action>
             <v-btn icon @click="goTo(todo)">
-              <v-icon left color="grey lighten-1">mdi-pencil</v-icon>
+              <v-icon left color="blue lighten-1">mdi-pencil</v-icon>
             </v-btn>
             <v-btn icon @click="remove(todo)">
-              <v-icon color="grey lighten-1">mdi-delete</v-icon>
+              <v-icon color="blue lighten-1">mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
-      </v-list>
-    </v-row>
-    <v-row justify="center">
-      <v-form
-        class="d-flex align-baseline"
+          <v-divider class="mx-4" v-if="index < todos.length -1" :key="index"></v-divider>
+        </template>
+        <v-form
+        class="pa-6 d-flex align-baseline"
         ref="form"
         v-on:submit.prevent="onSubmit"
       >
@@ -46,7 +43,9 @@
         </v-text-field>
         <v-btn class="ml-4" type="submit"> add </v-btn>
       </v-form>
+      </v-list>
     </v-row>
+
   </v-container>
 </template>
 

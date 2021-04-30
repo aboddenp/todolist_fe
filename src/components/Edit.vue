@@ -1,11 +1,10 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <h3>Editing task {{ this.$route.params.description }}</h3></v-row
-    >
-
-    <v-row justify="center">
+      <v-card class="pa-6" elevation="2"> 
+        <v-subheader class="pl-0">Editing task "{{ this.$route.params.description }}" </v-subheader>
       <v-form>
+        
         <v-text-field
           v-model="description"
           hint="Change or fix the task"
@@ -14,6 +13,8 @@
         <v-btn @click="makeChange()">Save</v-btn>
         <v-btn class="ml-4" @click="returnHome()">Cancel</v-btn>
       </v-form>
+      </v-card>
+
     </v-row>
   </v-container>
 </template>
