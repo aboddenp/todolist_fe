@@ -1,43 +1,22 @@
 <template>
-  <v-container>
+  <v-container >
     <v-row justify="center">
       <v-list elevation="2">
         <v-subheader class="pl-4">Folders</v-subheader>
-        <template v-for="(folder, index) in folders">
-          <v-list-item :key="folder.id">
-            <v-list-item-content class="pr-16">
-              {{ folder.name }}
-            </v-list-item-content>
 
-            <v-spacer> </v-spacer>
+        <v-list-item class="d-flex justify-center">
+          <v-progress-circular
+            block
+            :width="3"
+            v-if="loading"
+            color="grey lighten-1"
+            indeterminate
+          ></v-progress-circular>
+        </v-list-item>
 
-            <v-tooltip left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon @click="goTo(folder)" v-bind="attrs" v-on="on">
-                  <v-icon left color="blue lighten-1">mdi-folder</v-icon>
-                </v-btn>
-              </template>
-              <span> open folder </span>
-            </v-tooltip>
+        <ListItem :items="folders" :data1="openData"  :data2="deleteData" @remove="remove"  @open="goTo" > </ListItem>
+        
 
-            <v-tooltip right>
-              <template v-slot:activator="{ on, attrs }">
-                <v-list-item-action>
-                <v-btn icon @click="remove(folder)" v-bind="attrs" v-on="on">
-                  <v-icon left color="blue lighten-1">mdi-delete</v-icon>
-                </v-btn>
-                </v-list-item-action>
-              </template>
-              <span>  delete folder </span>
-            </v-tooltip>
-
-          </v-list-item>
-          <v-divider
-            class="mx-4"
-            v-if="index < folders.length - 1"
-            :key="index"
-          ></v-divider>
-        </template>
         <v-form
           class="d-flex pa-6 align-baseline"
           ref="form"
@@ -61,10 +40,25 @@
 <script>
 import TodoListDataService from "/src/services/TodoListDataServices.js";
 import router from "../router";
+import ListItem from "./ListItem"
 export default {
   name: "Folder",
+  components: {
+    ListItem
+  },
   data() {
     return {
+      loading: true,
+      deleteData: {
+        icon: "mdi-delete",
+        event: "remove",
+        description: "delete folder"
+      },
+      openData: {
+        icon: "mdi-folder",
+        event: "open",
+        description: "open folder"
+      },
       folders: null,
       newFolderName: "",
       folderRules: [(v) => !!v || "Name is required"],
@@ -102,6 +96,7 @@ export default {
     getFolders() {
       TodoListDataService.getAllFolders()
         .then((response) => {
+          this.loading = false;
           this.folders = response["data"];
         })
         .catch((e) => {

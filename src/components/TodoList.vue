@@ -18,7 +18,20 @@
           </v-tooltip>
           {{ this.folder ? this.folder.name : "loading" }}
         </v-subheader>
-        <template v-for="(todo, index) in todos">
+
+        <ListItem :items="todos" :data1="editTask"  :data2="deleteTask" checkbox="true" @checked="toggleDone" @remove="remove"  @open="goTo" > </ListItem>
+
+        <v-list-item class="d-flex justify-center">
+          <v-progress-circular
+            v-if="loading"
+            block
+            :width="3"
+            color="grey lighten-1"
+            indeterminate
+          ></v-progress-circular>
+        </v-list-item>
+
+        <!-- <template v-for="(todo, index) in todos">
           <v-list-item :key="todo.id">
             <v-list-item-action>
               <v-checkbox
@@ -56,7 +69,7 @@
             v-if="index < todos.length - 1"
             :key="index"
           ></v-divider>
-        </template>
+        </template> -->
         <v-form
           class="pa-6 d-flex align-baseline"
           ref="form"
@@ -80,14 +93,29 @@
 <script>
 import TodoListDataService from "/src/services/TodoListDataServices.js";
 import router from "../router";
+import ListItem from "./ListItem"
 export default {
   name: "TodoList",
+  components:{
+    ListItem
+  },
   data() {
     return {
+      loading: true,
       todos: null,
       folder: null,
       newdesc: "",
       descRules: [(v) => !!v || "Name is required"],
+      deleteTask: {
+        icon: "mdi-delete",
+        event: "remove",
+        description: "delete task",
+      },
+      editTask: {
+        icon: "mdi-pencil",
+        event: "open",
+        description: "edit task",
+      },
     };
   },
   methods: {
@@ -134,6 +162,7 @@ export default {
           TodoListDataService.getAll(this.folder.id)
             .then((response) => {
               this.todos = response["data"];
+              this.loading = false;
             })
             .catch((e) => {
               console.log(e);
