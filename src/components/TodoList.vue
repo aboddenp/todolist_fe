@@ -2,50 +2,78 @@
   <v-container>
     <v-row justify="center">
       <v-list elevation="2">
-        <v-subheader class="pl-6">Folders > {{ this.folder ? this.folder.name : "loading" }} </v-subheader>
-        <template v-for="(todo, index) in todos" > 
-        <v-list-item :key="todo.id">
-          <v-list-item-action>
-            <v-checkbox
-              color="orange lighten-1"
-              :input-value="todo.done"
-              @click="toggleDone(todo)"
-            ></v-checkbox>
-          </v-list-item-action>
+        <v-subheader class="pl-6">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                class="mr-2 blue--text lighten-1"
+                v-bind="attrs"
+                v-on="on"
+                @click="goBack()"
+              >
+                Folders >
+              </span>
+            </template>
+            <span> Go to folders</span>
+          </v-tooltip>
+          {{ this.folder ? this.folder.name : "loading" }}
+        </v-subheader>
+        <template v-for="(todo, index) in todos">
+          <v-list-item :key="todo.id">
+            <v-list-item-action>
+              <v-checkbox
+                color="orange lighten-1"
+                :input-value="todo.done"
+                @click="toggleDone(todo)"
+              ></v-checkbox>
+            </v-list-item-action>
 
-          <v-list-item-content>
-            {{ todo.description }}
-          </v-list-item-content>
+            <v-list-item-content>
+              {{ todo.description }}
+            </v-list-item-content>
 
-          <v-list-item-action>
-            <v-btn icon @click="goTo(todo)">
-              <v-icon left color="blue lighten-1">mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn icon @click="remove(todo)">
-              <v-icon color="blue lighten-1">mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-          <v-divider class="mx-4" v-if="index < todos.length -1" :key="index"></v-divider>
+            <v-list-item-action>
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon @click="goTo(todo)" v-bind="attrs" v-on="on">
+                    <v-icon left color="blue lighten-1">mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span> Edit Task </span>
+              </v-tooltip>
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon @click="remove(todo)" v-bind="attrs" v-on="on">
+                    <v-icon left color="blue lighten-1">mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+                <span> Delete Task </span>
+              </v-tooltip>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider
+            class="mx-4"
+            v-if="index < todos.length - 1"
+            :key="index"
+          ></v-divider>
         </template>
         <v-form
-        class="pa-6 d-flex align-baseline"
-        ref="form"
-        v-on:submit.prevent="onSubmit"
-      >
-        <v-text-field
-          v-model="newdesc"
-          label="New Task"
-          hint="hint:' make more pancakes'"
-          :rules="descRules"
-          required
+          class="pa-6 d-flex align-baseline"
+          ref="form"
+          v-on:submit.prevent="onSubmit"
         >
-        </v-text-field>
-        <v-btn class="ml-4" type="submit"> add </v-btn>
-      </v-form>
+          <v-text-field
+            v-model="newdesc"
+            label="New Task"
+            hint="hint:' make more pancakes'"
+            :rules="descRules"
+            required
+          >
+          </v-text-field>
+          <v-btn class="ml-4" type="submit"> add </v-btn>
+        </v-form>
       </v-list>
     </v-row>
-
   </v-container>
 </template>
 
@@ -114,7 +142,9 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-
+    },
+    goBack() {
+      router.go(-1);
     },
   },
 
