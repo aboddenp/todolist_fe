@@ -11,16 +11,32 @@
 
             <v-spacer> </v-spacer>
 
-            <v-btn icon @click="goTo(folder)">
-              <v-icon left color="blue lighten-1">mdi-folder</v-icon>
-            </v-btn>
-            <v-list-item-action>
-              <v-btn icon @click="remove(folder)">
-                <v-icon color="blue lighten-1">mdi-delete</v-icon>
-              </v-btn>
-            </v-list-item-action>
+            <v-tooltip left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon @click="goTo(folder)" v-bind="attrs" v-on="on">
+                  <v-icon left color="blue lighten-1">mdi-folder</v-icon>
+                </v-btn>
+              </template>
+              <span> open folder </span>
+            </v-tooltip>
+
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-list-item-action>
+                <v-btn icon @click="remove(folder)" v-bind="attrs" v-on="on">
+                  <v-icon left color="blue lighten-1">mdi-delete</v-icon>
+                </v-btn>
+                </v-list-item-action>
+              </template>
+              <span>  delete folder </span>
+            </v-tooltip>
+
           </v-list-item>
-          <v-divider class="mx-4" v-if="index < folders.length - 1" :key="index"></v-divider>
+          <v-divider
+            class="mx-4"
+            v-if="index < folders.length - 1"
+            :key="index"
+          ></v-divider>
         </template>
         <v-form
           class="d-flex pa-6 align-baseline"
@@ -39,7 +55,6 @@
         </v-form>
       </v-list>
     </v-row>
-
   </v-container>
 </template>
 
